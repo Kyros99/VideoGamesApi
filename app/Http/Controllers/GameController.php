@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Models\User;
 use Illuminate\Http\Request;
+
 
 class GameController extends Controller
 {
@@ -13,6 +13,7 @@ class GameController extends Controller
      */
     public function index(Request $request)
     {
+
         $this->authorize('index', Game::class);
 
         // Get the authenticated user
