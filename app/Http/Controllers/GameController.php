@@ -10,12 +10,34 @@ class GameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        // Get the authenticated user
+        $user = auth()->user();
+
+        // Start building the query
+        $query = Game::where('user_id', $user->id);
+
+        // Apply genre filter if provided
+        if ($request->has('genre')) {
+            $query->where('genre', $request->input('genre'));
+        }
+
+        // Apply sorting by release date if sort parameter is provided
+        if ($request->has('sort_by') && $request->input('sort_by') === 'release_date') {
+            $query->orderBy('release_date', $request->input('sort_order', 'asc'));
+        }
+
+        // Fetch the filtered and sorted results
+        $games = $query->get();
+
+        // Return the games as a JSON response
+        return response()->json($games);
     }
 
-    /**
+
+        /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -27,7 +49,7 @@ class GameController extends Controller
                 'release_date' => 'required|date',
                 'genre' => 'required',
             ]),
-            'user_id' => 1,
+            'user_id' => auth()->id(),
         ]);
 
         return response()->json($game, 201);
