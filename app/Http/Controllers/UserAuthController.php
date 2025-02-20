@@ -12,7 +12,7 @@ class UserAuthController extends Controller
         $registerUserData = $request->validate([
             'name'=>'required|string',
             'email'=>'required|string|email|unique:users',
-            'password'=>'required/min:8'
+            'password'=>'required|min:8'
         ]);
         $user = User::create([
             'name' => $registerUserData['name'],
