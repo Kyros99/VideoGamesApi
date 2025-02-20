@@ -56,6 +56,7 @@ class GameController extends Controller
                 'description' => 'required|string|max:1000',
                 'release_date' => 'required|date|before:tomorrow',
                 'genre' => 'required|string|max:50',
+                'is_admin' => 'boolean'
             ]),
             'user_id' => auth()->id(),
         ]);
@@ -69,7 +70,7 @@ class GameController extends Controller
     public function show(Game $game)
     {
         // Authorization: Ensure the user can view this specific game
-        $this->authorize('view', $game);
+        $this->authorize('show', $game);
 
         // Return the game as a JSON response
         return response()->json($game, 200);
@@ -100,7 +101,7 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        $this->authorize('delete', $game);
+        $this->authorize('destroy', $game);
 
         $game->delete();
 

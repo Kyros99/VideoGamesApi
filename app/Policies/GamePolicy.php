@@ -51,7 +51,8 @@ class GamePolicy
      */
     public function destroy(User $user, Game $game)
     {
-        return $user->id === $game->user_id || $user->role === 'admin'
+
+        return $user->isAdmin() || $user->id === $game->user_id
             ? Response::allow()
             : Response::deny('You cannot delete this game.');
     }

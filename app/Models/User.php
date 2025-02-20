@@ -16,14 +16,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(Game::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->is_admin === 1;
+    }
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'is_admin'
     ];
     protected $hidden = [
         'password',
         'remember_token',
+        'is_admin'
     ];
 
     protected $casts = [
