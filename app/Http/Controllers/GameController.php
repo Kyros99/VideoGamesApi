@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
@@ -12,9 +13,13 @@ class GameController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('index', Game::class);
 
         // Get the authenticated user
         $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         // Start building the query
         $query = Game::where('user_id', $user->id);
@@ -42,12 +47,14 @@ class GameController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', Game::class);
+
         $game = Game::create([
             ...$request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'release_date' => 'required|date',
-                'genre' => 'required',
+                'title' => 'required|string|max:255',
+                'description' => 'required|string|max:1000',
+                'release_date' => 'required|date|before:tomorrow',
+                'genre' => 'required|string|max:50',
             ]),
             'user_id' => auth()->id(),
         ]);
@@ -58,9 +65,14 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Game $game)
     {
-        //
+        // Authorization: Ensure the user can view this specific game
+        $this->authorize('view', $game);
+
+        // Return the game as a JSON response
+        return response()->json($game, 200);
+
     }
 
     /**
@@ -68,11 +80,14 @@ class GameController extends Controller
      */
     public function update(Request $request, Game $game)
     {
+
+        $this->authorize('update', $game);
+
         $game->update(
             $request->validate([
                 'title' => 'sometimes|string|max:255',
-                'description' => 'string',
-                'release_date' => 'sometimes|date',
+                'description' => 'sometimes|string|max:1000',
+                'release_date' => 'sometimes|date|before:tomorrow',
                 'genre' => 'sometimes'
             ])
         );
@@ -84,6 +99,8 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
+        $this->authorize('delete', $game);
+
         $game->delete();
 
         return response(status: 204);
