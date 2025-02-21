@@ -15,32 +15,35 @@ class GameController extends Controller
     {
         $this->authorize('index', Game::class);
 
+        // 🎯 Simple validation using request->validate()
+        $validated = $request->validate([
+            'genre' => 'nullable|string|max:50', // Genre must be a string
+            'sort_order' => 'nullable|in:asc,desc', // Only 'asc' or 'desc' allowed
+            'per_page' => 'nullable|integer|min:1|max:100', // Pagination limit
+            'page' => 'nullable|integer|min:1', // Page must be positive
+        ]);
+
         $user = auth()->user();
 
-        // Users see only their own games, admins see all
+        // Admins see all games, regular users only see their own
         $query = $user->isAdmin() ? Game::query() : Game::where('user_id', $user->id);
 
-        // 🎯 Filter by genre
-        if ($request->filled('genre')) {
-            $query->where('genre', $request->genre);
+        // 🎯 Apply filtering
+        if (!empty($validated['genre'])) {
+            $query->where('genre', $validated['genre']);
         }
 
-        // 🎯 Sort by release date (default: newest first)
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy('release_date', $sortOrder);
+        // 🎯 Apply sorting (default: newest first)
+        $query->orderBy('release_date', $validated['sort_order'] ?? 'desc');
 
-        // 🎯 Get page size from request (default: 10 per page)
-        $perPage = $request->input('per_page', 10);
-
-        // 🎯 Paginate results
-        $games = $query->paginate($perPage);
+        // 🎯 Use validated pagination settings
+        $games = $query->paginate($validated['per_page'] ?? 10);
 
         return response()->json($games);
-
     }
 
 
-        /**
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
