@@ -49,7 +49,7 @@ class GamePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function destroy(User $user, Game $game)
+    public function delete(User $user, Game $game): Response
     {
 
         return $user->isAdmin() || $user->id === $game->user_id

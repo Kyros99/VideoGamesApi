@@ -56,7 +56,6 @@ class GameController extends Controller
                 'description' => 'required|string|max:1000',
                 'release_date' => 'required|date|before:tomorrow',
                 'genre' => 'required|string|max:50',
-                'is_admin' => 'boolean'
             ]),
             'user_id' => auth()->id(),
         ]);
@@ -101,7 +100,7 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        $this->authorize('destroy', $game);
+        $this->authorize('delete', $game);
 
         $game->delete();
 

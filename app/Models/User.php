@@ -17,6 +17,16 @@ class User extends Authenticatable
         return $this->hasMany(Game::class);
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function isAdmin()
     {
         return $this->is_admin === 1;
