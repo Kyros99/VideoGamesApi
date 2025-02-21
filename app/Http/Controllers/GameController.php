@@ -13,33 +13,30 @@ class GameController extends Controller
      */
     public function index(Request $request)
     {
-
         $this->authorize('index', Game::class);
 
-        // Get the authenticated user
         $user = auth()->user();
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+
+        // Users see only their own games, admins see all
+        $query = $user->isAdmin() ? Game::query() : Game::where('user_id', $user->id);
+
+        // 🎯 Filter by genre
+        if ($request->filled('genre')) {
+            $query->where('genre', $request->genre);
         }
 
-        // Start building the query
-        $query = Game::where('user_id', $user->id);
+        // 🎯 Sort by release date (default: newest first)
+        $sortOrder = $request->input('sort_order', 'desc');
+        $query->orderBy('release_date', $sortOrder);
 
-        // Apply genre filter if provided
-        if ($request->has('genre')) {
-            $query->where('genre', $request->input('genre'));
-        }
+        // 🎯 Get page size from request (default: 10 per page)
+        $perPage = $request->input('per_page', 10);
 
-        // Apply sorting by release date if sort parameter is provided
-        if ($request->has('sort_by') && $request->input('sort_by') === 'release_date') {
-            $query->orderBy('release_date', $request->input('sort_order', 'asc'));
-        }
+        // 🎯 Paginate results
+        $games = $query->paginate($perPage);
 
-        // Fetch the filtered and sorted results
-        $games = $query->get();
-
-        // Return the games as a JSON response
         return response()->json($games);
+
     }
 
 
