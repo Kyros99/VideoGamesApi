@@ -8,21 +8,28 @@ use Illuminate\Support\Facades\Hash;
 
 class UserAuthController extends Controller
 {
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $registerUserData = $request->validate([
-            'name'=>'required|string',
-            'email'=>'required|string|email|unique:users',
-            'password'=>'required|min:8'
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|min:8',
+            'is_admin' => 'nullable|boolean', // Ensures only 0 or 1 is accepted
         ]);
+
         $user = User::create([
             'name' => $registerUserData['name'],
             'email' => $registerUserData['email'],
             'password' => Hash::make($registerUserData['password']),
+            'is_admin' => $request->boolean('is_admin', false), // Defaults to false (0)
         ]);
+
         return response()->json([
-            'message' => 'User Created ',
-        ]);
+            'message' => 'User Created',
+            'user' => $user,
+        ], 201);
     }
+
 
     public function login(Request $request){
         $loginUserData = $request->validate([

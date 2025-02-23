@@ -13,14 +13,14 @@ class Game extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function ratings()
+    public function rating()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasOne(Rating::class);
     }
 
-    public function reviews()
+    public function review()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasOne(Review::class);
     }
 
 

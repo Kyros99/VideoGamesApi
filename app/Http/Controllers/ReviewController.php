@@ -32,7 +32,8 @@ class ReviewController extends Controller
         $this->authorize('view', [Review::class, $game]);
 
         return response()->json([
-            'reviews' => $game->reviews()->with('user:id,name')->latest()->paginate(10),
+            'rating' => $game->review()->with('user:id,name')->first(),
         ]);
+
     }
 }

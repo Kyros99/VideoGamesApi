@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IndexGameRequest;
 use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\UpdateGameRequest;
+use App\Http\Resources\GameResource;
 use App\Models\Game;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,7 @@ class GameController extends Controller
      */
     public function index(IndexGameRequest $request)
     {
+
         $this->authorize('index', Game::class);
 
         $user = auth()->user();
@@ -28,7 +30,12 @@ class GameController extends Controller
 
         $query->orderBy('release_date', $request->input('sort', 'desc'));
 
-        return response()->json($query->paginate(10));
+        // Eager load 'rating' and 'review' relationships
+        $games = $query->with(['rating', 'review'])->paginate(10);
+
+        // Wrap the result in the GameResource
+        return GameResource::collection($games);
+
 
     }
 
@@ -40,6 +47,7 @@ class GameController extends Controller
     {
         $this->authorize('store', Game::class);
 
+        //auth()->user()->games()->create($request->validated());
         $game = Game::create($request->validated() + ['user_id' => auth()->id()]);
 
         return response()->json($game, 201);

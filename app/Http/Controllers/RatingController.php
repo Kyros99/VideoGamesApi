@@ -31,8 +31,9 @@ class RatingController extends Controller
         $this->authorize('view', [Rating::class, $game]);
 
         return response()->json([
-            'ratings' => $game->ratings()->with('user:id,name')->paginate(10),
+            'rating' => $game->rating()->with('user:id,name')->first(),
         ]);
+
 
     }
 }
