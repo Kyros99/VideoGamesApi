@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register',[UserAuthController::class,'register']);
 
-Route::post('login',[UserAuthController::class,'login']);
-
-Route::post('logout',[UserAuthController::class,'logout'])
-    ->middleware('auth:sanctum');
+Route::post('/login', [UserAuthController::class, 'login'])
+    ->middleware('throttle:10,1');
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
+
+    Route::post('logout', [UserAuthController::class, 'logout']);
 
     Route::apiResource('games', GameController::class);
 
