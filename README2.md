@@ -196,24 +196,30 @@ The **Postman Collection** for testing API requests is available in the reposito
 To automatically store and use the authentication token in Postman,
 use the following script in the Tests or in the post-response Scripts(Windows App) tab of the login request:
 
+```javascript
+
 try {
-let json = pm.response.json();
-if (json.access_token) {
-pm.environment.set("TOKEN", json.access_token);
-console.log("Token saved successfully:", json.access_token);
-} else {
-console.log("Token not found in response:", json);
-}
+    let json = pm.response.json();
+    if (json.access_token) {
+        pm.environment.set("TOKEN", json.access_token);
+        console.log("Token saved successfully:", json.access_token);
+    } else {
+        console.log("Token not found in response:", json);
+    }
 } catch (error) {
-console.log("Error parsing JSON response:", error);
+    console.log("Error parsing JSON response:", error);
 }
+```
 
 Go to environment variables and create a TOKEN Variable.
 
 This script saves the access_token in the Videogames Environment as TOKEN. In every request that requires
 authentication, use the following format for the Bearer Token:
 
-Authorization: Bearer {{TOKEN}}
+```
+Authorization: Bearer your_token_here
+```
+
 ---
 
 ## 🤝 Contributing
