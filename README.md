@@ -1,66 +1,282 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎮 Video Game Management System API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📌 Project Overview
 
-## About Laravel
+The **Video Game Management System API** is a RESTful API built with Laravel, allowing users to manage video games with
+authentication, game creation, updates, deletion, and filtering features. Users can also rate and review their own
+games. This API supports **role-based access control**, ensuring only authorized users can modify their game, and only
+an admin can delete one.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+To check some parts specific,please have a look also at the commits in GitHub.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Features
 
-## Learning Laravel
+- ✅ **User authentication** using Laravel Sanctum.
+- ✅ **CRUD operations** for managing video games.
+- ✅ **Role-based permissions** (Admin vs. Regular Users).
+- ✅ **Filtering and sorting options** for games.
+- ✅ **Users can rate and review** any of their games.
+- ✅ **Users can retrieve** their own reviews and ratings.
+- ✅ **API documentation** available in Postman Collection.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🔑 Key Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Authorization using Laravel Policies**: Secure access control, ensuring only the owner or admin can modify game
+  data.
+- **API Resource Routes**: Uses `apiResource` in routes for better RESTful structure.
+- **Laravel Form Requests**: Handles validation to keep controllers clean and ensure request data integrity.
+- **Laravel JSON Resources**: Structures API responses for better clarity and consistency.
+- **Middleware Protection**: Ensures authenticated users can only access specific routes.
+- **Pagination Support**: API responses include paginated data for better performance.
+- **Rate Limiting**: All API calls are limited to **20 requests per minute** to prevent abuse.
+- **Throttling Login Attempts**: Users are limited to **10 login attempts per minute** for security purposes.
+- **Eager Loading**: Prevents N+1 query issues, optimizing database performance.
+- **Focused on Laravel Best Practices**: Ensures performance, scalability, and maintainability by following Laravel's
+  recommended development standards.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Installation
 
-### Premium Partners
+### 1️⃣ Prerequisites
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Ensure you have the following installed:
 
-## Contributing
+- PHP 8.1+
+- Composer 2.6+
+- MySQL
+- Laravel 10.2
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2️⃣ Clone the Repository
 
-## Code of Conduct
+```sh
+git clone https://github.com/Kyros99/VideoGamesApi.git
+cd videogamesapi
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3️⃣ Install Dependencies
 
-## Security Vulnerabilities
+```sh
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4️⃣ Configure Environment
 
-## License
+Copy the `.env.example` file and set up your database credentials:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```sh
+cp .env.example .env
+```
+
+Then update your `.env` file:
+
+```ini
+DB_CONNECTION = mysql
+DB_HOST = 127.0.0.1
+DB_PORT = 3306
+DB_DATABASE = videogamesdb
+DB_USERNAME = root
+DB_PASSWORD = yourpassword
+```
+
+### 5️⃣ Generate Application Key
+
+```sh
+php artisan key:generate
+```
+
+### 6️⃣ Run Migrations and Seed Database
+
+**Before Seeding head to database/seeders/DatabaseSeeder.php and configure how many users you want to create
+and how many games each would have**
+
+**To login with a random user,copy his email to postman and use 'password' as password,each one has the same password**
+
+```sh
+php artisan migrate --seed
+```
+
+### 7️⃣ Serve the Application
+
+```sh
+php artisan serve
+```
+
+By default, the application runs on `http://127.0.0.1:8000`.
+
+---
+
+## 🗂️ Entity-Relationship Diagram (ERD)
+
+Below is the ERD for the Video Game Management System:
+
+[ERD_VideoGamesdb.png](ERD_VideoGamesdb.png)
+
+(There is the png file below).
+
+---
+
+## 🔑 Authentication
+
+The API uses **Laravel Sanctum** for authentication.
+
+### Register a User
+
+**POST** `/api/register`
+
+#### Request Body:
+
+```json
+{
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "password123",
+    "is_admin": false
+}
+```
+
+### Login
+
+**POST** `/api/login`
+
+#### Response:
+
+```json
+{
+    "access_token": "your_token_here"
+}
+```
+
+### Use the Token in Requests
+
+Include the token in your requests:
+
+```
+Authorization: Bearer your_token_here
+```
+
+---
+
+## 🎮 API Endpoints
+
+### 🔹 User Authentication
+
+| Method   | Endpoint        | Description                                    |
+|----------|-----------------|------------------------------------------------|
+| **POST** | `/api/register` | Register a new user                            |
+| **POST** | `/api/login`    | Login and receive an authentication token      |
+| **POST** | `/api/logout`   | Logout the authenticated user (Requires Token) |
+
+### 🔹 Game Management
+
+| Method     | Endpoint                    | Description                                                                                         |
+|------------|-----------------------------|-----------------------------------------------------------------------------------------------------|
+| **POST**   | `/api/games`                | Create a new game (requires authentication)                                                         |
+| **PATCH**  | `/api/games/{game}`         | Update a game (only owner)                                                                          |
+| **DELETE** | `/api/games/{game}`         | Delete a game (only owner or admin)                                                                 |
+| **GET**    | `/api/games`                | Retrieve all games with filtering options (requires authentication). If admin, retrieves all games. |
+| **GET**    | `/api/games/{game}`         | Retrieves a game based on id(required authentication)                                               |
+| **POST**   | `/api/games/{game}/rate`    | Rate a game (only owner can rate their game)                                                        |
+| **GET**    | `/api/games/{game}/ratings` | Get the user's rating for their own game                                                            |
+| **POST**   | `/api/games/{game}/review`  | Review a game (only owner can review their game)                                                    |
+| **GET**    | `/api/games/{game}/reviews` | Get the user's review and rating for their own game                                                 |
+
+---
+
+## 📜 Filtering & Sorting
+
+Filtering and sorting are optional.
+
+- `?sort=asc|desc` → Sort by release date (asc or desc).
+- `?genre=RPG` → Filter by genre (e.g., Action, RPG).
+
+Accepted genres: Action, Adventure, RPG, Sports, FPS, Strategy, Puzzle
+
+#### Example:
+
+```sh
+GET /api/games?sort=desc&genre=Action
+```
+
+---
+
+## 📄 API Documentation
+
+The **Postman Collection** for testing API requests is available in the repository named
+1.VideoGamesApi.postman_collection
+
+Here is also the link
+https://documenter.getpostman.com/view/42171488/2sAYdcsCq8
+
+🔹 Auto Import Token After Login
+
+To automatically store and use the authentication token in Postman,
+use the following script in the Tests or in the post-response Scripts(Windows App) tab of the login request:
+
+```javascript
+
+try {
+    let json = pm.response.json();
+    if (json.access_token) {
+        pm.environment.set("TOKEN", json.access_token);
+        console.log("Token saved successfully:", json.access_token);
+    } else {
+        console.log("Token not found in response:", json);
+    }
+} catch (error) {
+    console.log("Error parsing JSON response:", error);
+}
+```
+
+Go to environment variables and create a TOKEN Variable.
+
+This script saves the access_token in the Videogames Environment as TOKEN. In every request that requires
+authentication, use the following format for the Bearer Token:
+
+```
+Authorization: Bearer your_token_here
+```
+
+---
+
+## 🔮 Future Improvements
+
+**🐳 Dockerize the application for easier deployment and environment consistency.**
+
+**⚡ Redis** for caching to improve performance and reduce database load.
+
+**🌍** Integrate with third-party APIs to extend functionality.
+
+**🔑 Spatie** for advanced role and permission management.
+
+**🧪** Write unit and feature tests to ensure application reliability.
+
+**📜** Enhance logging to improve debugging and application monitoring.
+
+**🔄** Implement queues to handle background tasks efficiently.
+
+---
+
+---
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature-name`
+3. **Commit changes**: `git commit -m 'Add new feature'`
+4. **Push branch**: `git push origin feature-name`
+5. **Open a Pull Request**
+
+---
+
+## 📧 Contact
+
+For any issues, please **open a GitHub issue** or contact me at `kyriakospanaretoss@gmail.com`.
+
+---
+
+Happy coding! 🚀

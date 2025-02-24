@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Create 5000 users
+        // Create 500 users
         User::factory(10)->create()->each(function ($user) {
             // Assign each user between 5 and 10 games
             $games = Game::factory(100)->create([
