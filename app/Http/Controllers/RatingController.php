@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RatingResource;
 use App\Models\Game;
 use App\Models\Rating;
 use Illuminate\Http\Request;
@@ -17,12 +18,12 @@ class RatingController extends Controller
             'rating' => 'required|integer|min:1|max:5',
         ]);
 
-        Rating::updateOrCreate(
-            ['user_id' => auth()->id(), 'game_id' => $game->id],
+        $rating = $game->rating()->updateOrCreate(
+            ['user_id' => auth()->id()],
             ['rating' => $data['rating']]
         );
 
-        return response()->json(['message' => 'Rating submitted']);
+        return new RatingResource($rating);
     }
 
     public function show(Game $game)
@@ -30,9 +31,9 @@ class RatingController extends Controller
 
         $this->authorize('view', [Rating::class, $game]);
 
-        return response()->json([
-            'rating' => $game->rating()->with('user:id,name')->first(),
-        ]);
+        $rating = $game->rating()->with('user:id,name', 'game:id,title')->first();
+
+        return new RatingResource($rating);
 
 
     }

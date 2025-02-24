@@ -16,6 +16,18 @@ class ReviewResource extends JsonResource
     {
         return [
             'review' => $this->review,
+            'user' => $this->whenLoaded('user', function () {
+                return [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                ];
+            }),
+            'game' => $this->whenLoaded('game', function () {
+                return [
+                    'id' => $this->game->id,
+                    'title' => $this->game->title,
+                ];
+            }),
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

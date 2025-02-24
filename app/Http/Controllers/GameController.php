@@ -7,51 +7,52 @@ use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\UpdateGameRequest;
 use App\Http\Resources\GameResource;
 use App\Models\Game;
-use Illuminate\Http\Request;
 
 
 class GameController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Authorize each user action
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Game::class, 'game');
+    }
+
+    /**
+     * Display a listing of the games the user has
      */
     public function index(IndexGameRequest $request)
     {
-
-        $this->authorize('index', Game::class);
-
+        //Get User
         $user = auth()->user();
 
+        //Get the games the user owns,if he is an admin it gets every single one
         $query = $user->isAdmin() ? Game::query() : Game::where('user_id', $user->id);
 
+        //If genre is provided,filter results based on it
         if ($request->filled('genre')) {
             $query->where('genre', $request->genre);
         }
 
+        //Order results in desc or asc order based on release fate,default is desc
         $query->orderBy('release_date', $request->input('sort', 'desc'));
 
-        // Eager load 'rating' and 'review' relationships
-        $games = $query->with(['rating', 'review'])->paginate(10);
+        // Eager load 'rating' and 'review' relationships along with pagination
+        $games = $query->with(['rating', 'review']);
 
-        // Wrap the result in the GameResource
-        return GameResource::collection($games);
-
+        return GameResource::collection($games->paginate());
 
     }
-
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreGameRequest $request)
     {
-        $this->authorize('store', Game::class);
+        $newGame = auth()->user()->games()->create($request->validated());
 
-        //auth()->user()->games()->create($request->validated());
-        $game = Game::create($request->validated() + ['user_id' => auth()->id()]);
-
-        return response()->json($game, 201);
-
+        return new GameResource($newGame);
     }
 
     /**
@@ -59,11 +60,10 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        // Authorization: Ensure the user can view this specific game
-        $this->authorize('show', $game);
+        // Eager load 'review' and 'rating' relationships
+        $game->load(['review', 'rating']);
 
-        // Return the game as a JSON response
-        return response()->json($game, 200);
+        return new GameResource($game);
 
     }
 
@@ -72,12 +72,9 @@ class GameController extends Controller
      */
     public function update(UpdateGameRequest $request, Game $game)
     {
-
-        $this->authorize('update', $game);
-
         $game->update($request->validated());
 
-        return response()->json($game, 200);
+        return new GameResource($game);
     }
 
     /**
@@ -85,8 +82,6 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        $this->authorize('delete', $game);
-
         $game->delete();
 
         return response(status: 204);

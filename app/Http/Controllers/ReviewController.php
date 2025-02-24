@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ReviewResource;
 use App\Models\Game;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -17,13 +18,12 @@ class ReviewController extends Controller
             'review' => 'required|string|max:1000',
         ]);
 
-        Review::create([
-            'user_id' => auth()->id(),
-            'game_id' => $game->id,
-            'review' => $data['review'],
-        ]);
+        $review = $game->review()->updateOrCreate(
+            ['user_id' => auth()->id()],
+            ['review' => $data['review']]
+        );
 
-        return response()->json(['message' => 'Review submitted']);
+        return new ReviewResource($review);
     }
 
     public function show(Game $game)
@@ -31,9 +31,8 @@ class ReviewController extends Controller
 
         $this->authorize('view', [Review::class, $game]);
 
-        return response()->json([
-            'rating' => $game->review()->with('user:id,name')->first(),
-        ]);
+        $rating = $game->review()->with('user:id,name', 'game:id,title')->first();
 
+        return new ReviewResource($rating);
     }
 }
