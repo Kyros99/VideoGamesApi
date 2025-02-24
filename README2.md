@@ -156,16 +156,17 @@ Authorization: Bearer your_token_here
 
 ### 🔹 Game Management
 
-| Method     | Endpoint                 | Description                                                                                         |
-|------------|--------------------------|-----------------------------------------------------------------------------------------------------|
-| **POST**   | `/api/games`             | Create a new game (requires authentication)                                                         |
-| **PATCH**  | `/api/games/{id}`        | Update a game (only owner)                                                                          |
-| **DELETE** | `/api/games/{id}`        | Delete a game (only owner or admin)                                                                 |
-| **GET**    | `/api/games`             | Retrieve all games with filtering options (requires authentication). If admin, retrieves all games. |
-| **POST**   | `/api/games/{id}/rate`   | Rate a game (only owner can rate their game)                                                        |
-| **GET**    | `/api/games/{id}/rate`   | Get the user's rating for their own game                                                            |
-| **POST**   | `/api/games/{id}/review` | Review a game (only owner can review their game)                                                    |
-| **GET**    | `/api/games/{id}/review` | Get the user's review and rating for their own game                                                 |
+| Method     | Endpoint                    | Description                                                                                         |
+|------------|-----------------------------|-----------------------------------------------------------------------------------------------------|
+| **POST**   | `/api/games`                | Create a new game (requires authentication)                                                         |
+| **PATCH**  | `/api/games/{game}`         | Update a game (only owner)                                                                          |
+| **DELETE** | `/api/games/{game}`         | Delete a game (only owner or admin)                                                                 |
+| **GET**    | `/api/games`                | Retrieve all games with filtering options (requires authentication). If admin, retrieves all games. |
+| **GET**    | `/api/games/{game}`         | Retrieves a game based on id(required authentication)                                               |
+| **POST**   | `/api/games/{game}/rate`    | Rate a game (only owner can rate their game)                                                        |
+| **GET**    | `/api/games/{game}/ratings` | Get the user's rating for their own game                                                            |
+| **POST**   | `/api/games/{game}/review`  | Review a game (only owner can review their game)                                                    |
+| **GET**    | `/api/games/{game}/reviews` | Get the user's review and rating for their own game                                                 |
 
 ---
 
@@ -190,6 +191,29 @@ GET /api/games?sort=desc&genre=Action
 
 The **Postman Collection** for testing API requests is available in the repository.
 
+🔹 Auto Import Token After Login
+
+To automatically store and use the authentication token in Postman,
+use the following script in the Tests or in the post-response Scripts(Windows App) tab of the login request:
+
+try {
+let json = pm.response.json();
+if (json.access_token) {
+pm.environment.set("TOKEN", json.access_token);
+console.log("Token saved successfully:", json.access_token);
+} else {
+console.log("Token not found in response:", json);
+}
+} catch (error) {
+console.log("Error parsing JSON response:", error);
+}
+
+Go to environment variables and create a TOKEN Variable.
+
+This script saves the access_token in the Videogames Environment as TOKEN. In every request that requires
+authentication, use the following format for the Bearer Token:
+
+Authorization: Bearer {{TOKEN}}
 ---
 
 ## 🤝 Contributing
@@ -204,7 +228,7 @@ The **Postman Collection** for testing API requests is available in the reposito
 
 ## 📧 Contact
 
-For any issues, please **open a GitHub issue** or contact me at `your_email@example.com`.
+For any issues, please **open a GitHub issue** or contact me at `kyriakospanaretoss@gmail.com`.
 
 ---
 
